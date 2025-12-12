@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/score.js": {
-      "runtime": "edge"
-    }
-  }
-}
