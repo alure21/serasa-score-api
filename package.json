@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@vercel/og": "^0.5.20"
+    "next": "^14.0.0"
   }
 }
