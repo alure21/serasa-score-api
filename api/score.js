@@ -1,14 +1,14 @@
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
 
 export const config = {
   runtime: 'edge',
 };
 
 function getScoreColor(score) {
-  if (score <= 300) return '#E53935'; // Vermelho - baixo
-  if (score <= 500) return '#FF9800'; // Laranja - regular
-  if (score <= 700) return '#FDD835'; // Amarelo - bom
-  return '#43A047'; // Verde - excelente
+  if (score <= 300) return '#E53935';
+  if (score <= 500) return '#FF9800';
+  if (score <= 700) return '#FDD835';
+  return '#43A047';
 }
 
 function getScoreLabel(score) {
@@ -34,7 +34,6 @@ export default async function handler(req) {
   
   const scoreColor = getScoreColor(score);
   const scoreLabel = getScoreLabel(score);
-  const scorePercent = (score / 1000) * 100;
 
   return new ImageResponse(
     (
@@ -45,12 +44,9 @@ export default async function handler(req) {
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: '#FFFFFF',
-          fontFamily: 'Inter, sans-serif',
-          position: 'relative',
-          overflow: 'hidden',
+          fontFamily: 'sans-serif',
         }}
       >
-        {/* Header com gradiente rosa Serasa */}
         <div
           style={{
             display: 'flex',
@@ -64,7 +60,7 @@ export default async function handler(req) {
             <span style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '700' }}>
               Serasa
             </span>
-            <span style={{ color: '#F8BBD9', fontSize: '12px', fontWeight: '400' }}>
+            <span style={{ color: '#F8BBD9', fontSize: '12px' }}>
               Score de Crédito
             </span>
           </div>
@@ -82,26 +78,22 @@ export default async function handler(req) {
           </div>
         </div>
 
-        {/* Conteúdo Principal */}
         <div
           style={{
             display: 'flex',
             flex: 1,
             padding: '25px 30px',
-            gap: '30px',
           }}
         >
-          {/* Coluna Esquerda - Dados */}
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               flex: 1,
-              gap: '15px',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '15px' }}>
+              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase' }}>
                 Nome
               </span>
               <span style={{ color: '#212121', fontSize: '18px', fontWeight: '600' }}>
@@ -109,8 +101,8 @@ export default async function handler(req) {
               </span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase' }}>
                 CPF
               </span>
               <span style={{ color: '#212121', fontSize: '16px', fontWeight: '500' }}>
@@ -118,9 +110,8 @@ export default async function handler(req) {
               </span>
             </div>
 
-            {/* Barra de Score */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase', marginBottom: '8px' }}>
                 Faixa de Score
               </span>
               <div
@@ -132,12 +123,12 @@ export default async function handler(req) {
                   overflow: 'hidden',
                 }}
               >
-                <div style={{ flex: '30', backgroundColor: '#E53935', height: '100%' }} />
-                <div style={{ flex: '20', backgroundColor: '#FF9800', height: '100%' }} />
-                <div style={{ flex: '20', backgroundColor: '#FDD835', height: '100%' }} />
-                <div style={{ flex: '30', backgroundColor: '#43A047', height: '100%' }} />
+                <div style={{ width: '30%', backgroundColor: '#E53935', height: '100%' }} />
+                <div style={{ width: '20%', backgroundColor: '#FF9800', height: '100%' }} />
+                <div style={{ width: '20%', backgroundColor: '#FDD835', height: '100%' }} />
+                <div style={{ width: '30%', backgroundColor: '#43A047', height: '100%' }} />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#757575' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#757575', marginTop: '4px' }}>
                 <span>0</span>
                 <span>300</span>
                 <span>500</span>
@@ -147,7 +138,6 @@ export default async function handler(req) {
             </div>
           </div>
 
-          {/* Coluna Direita - Score Circle */}
           <div
             style={{
               display: 'flex',
@@ -165,10 +155,9 @@ export default async function handler(req) {
                 justifyContent: 'center',
                 width: '140px',
                 height: '140px',
-                borderRadius: '50%',
+                borderRadius: '70px',
                 border: `8px solid ${scoreColor}`,
                 backgroundColor: '#FAFAFA',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
               }}
             >
               <span
@@ -176,12 +165,11 @@ export default async function handler(req) {
                   fontSize: '42px',
                   fontWeight: '700',
                   color: scoreColor,
-                  lineHeight: 1,
                 }}
               >
                 {score}
               </span>
-              <span style={{ fontSize: '12px', color: '#757575', marginTop: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#757575' }}>
                 de 1000
               </span>
             </div>
@@ -201,7 +189,6 @@ export default async function handler(req) {
           </div>
         </div>
 
-        {/* Footer */}
         <div
           style={{
             display: 'flex',
