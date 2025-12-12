@@ -1,5 +1,3 @@
-import { ImageResponse } from 'next/og';
-
 export const config = {
   runtime: 'edge',
 };
@@ -34,183 +32,67 @@ export default async function handler(req) {
   
   const scoreColor = getScoreColor(score);
   const scoreLabel = getScoreLabel(score);
+  const hoje = new Date().toLocaleDateString('pt-BR');
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '600px',
-          height: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '20px 30px',
-            background: 'linear-gradient(135deg, #E91E63 0%, #AD1457 100%)',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ color: '#FFFFFF', fontSize: '28px', fontWeight: '700' }}>
-              Serasa
-            </span>
-            <span style={{ color: '#F8BBD9', fontSize: '12px' }}>
-              Score de Crédito
-            </span>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              padding: '8px 16px',
-              borderRadius: '20px',
-            }}
-          >
-            <span style={{ color: '#FFFFFF', fontSize: '12px' }}>
-              Consulta Online
-            </span>
-          </div>
-        </div>
+  const svg = `
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E91E63"/>
+      <stop offset="100%" style="stop-color:#AD1457"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="600" height="400" fill="#FFFFFF"/>
+  
+  <!-- Header -->
+  <rect width="600" height="80" fill="url(#headerGrad)"/>
+  <text x="30" y="42" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">Serasa</text>
+  <text x="30" y="62" font-family="Arial, sans-serif" font-size="12" fill="#F8BBD9">Score de Crédito</text>
+  <rect x="480" y="25" width="100" height="30" rx="15" fill="rgba(255,255,255,0.2)"/>
+  <text x="495" y="45" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF">Consulta Online</text>
+  
+  <!-- Nome -->
+  <text x="30" y="115" font-family="Arial, sans-serif" font-size="11" fill="#9E9E9E">NOME</text>
+  <text x="30" y="138" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#212121">${nome}</text>
+  
+  <!-- CPF -->
+  <text x="30" y="175" font-family="Arial, sans-serif" font-size="11" fill="#9E9E9E">CPF</text>
+  <text x="30" y="198" font-family="Arial, sans-serif" font-size="16" font-weight="500" fill="#212121">${formatCPF(cpf)}</text>
+  
+  <!-- Barra de Score -->
+  <text x="30" y="245" font-family="Arial, sans-serif" font-size="11" fill="#9E9E9E">FAIXA DE SCORE</text>
+  <rect x="30" y="255" width="90" height="12" rx="2" fill="#E53935"/>
+  <rect x="120" y="255" width="60" height="12" fill="#FF9800"/>
+  <rect x="180" y="255" width="60" height="12" fill="#FDD835"/>
+  <rect x="240" y="255" width="90" height="12" rx="2" fill="#43A047"/>
+  <text x="30" y="282" font-family="Arial, sans-serif" font-size="10" fill="#757575">0</text>
+  <text x="110" y="282" font-family="Arial, sans-serif" font-size="10" fill="#757575">300</text>
+  <text x="170" y="282" font-family="Arial, sans-serif" font-size="10" fill="#757575">500</text>
+  <text x="230" y="282" font-family="Arial, sans-serif" font-size="10" fill="#757575">700</text>
+  <text x="310" y="282" font-family="Arial, sans-serif" font-size="10" fill="#757575">1000</text>
+  
+  <!-- Score Circle -->
+  <circle cx="480" cy="200" r="70" fill="#FAFAFA" stroke="${scoreColor}" stroke-width="8"/>
+  <text x="480" y="195" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="${scoreColor}" text-anchor="middle">${score}</text>
+  <text x="480" y="220" font-family="Arial, sans-serif" font-size="12" fill="#757575" text-anchor="middle">de 1000</text>
+  
+  <!-- Score Label -->
+  <rect x="440" y="285" width="80" height="28" rx="14" fill="${scoreColor}"/>
+  <text x="480" y="304" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">${scoreLabel}</text>
+  
+  <!-- Footer -->
+  <rect y="360" width="600" height="40" fill="#F5F5F5"/>
+  <line x1="0" y1="360" x2="600" y2="360" stroke="#E0E0E0"/>
+  <text x="30" y="385" font-family="Arial, sans-serif" font-size="10" fill="#9E9E9E">Consulta realizada em ${hoje}</text>
+  <text x="520" y="385" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#E91E63">serasa.com.br</text>
+</svg>`;
 
-        <div
-          style={{
-            display: 'flex',
-            flex: 1,
-            padding: '25px 30px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              flex: 1,
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '15px' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase' }}>
-                Nome
-              </span>
-              <span style={{ color: '#212121', fontSize: '18px', fontWeight: '600' }}>
-                {nome}
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase' }}>
-                CPF
-              </span>
-              <span style={{ color: '#212121', fontSize: '16px', fontWeight: '500' }}>
-                {formatCPF(cpf)}
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: '#9E9E9E', fontSize: '11px', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Faixa de Score
-              </span>
-              <div
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  height: '12px',
-                  borderRadius: '6px',
-                  overflow: 'hidden',
-                }}
-              >
-                <div style={{ width: '30%', backgroundColor: '#E53935', height: '100%' }} />
-                <div style={{ width: '20%', backgroundColor: '#FF9800', height: '100%' }} />
-                <div style={{ width: '20%', backgroundColor: '#FDD835', height: '100%' }} />
-                <div style={{ width: '30%', backgroundColor: '#43A047', height: '100%' }} />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#757575', marginTop: '4px' }}>
-                <span>0</span>
-                <span>300</span>
-                <span>500</span>
-                <span>700</span>
-                <span>1000</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '180px',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '140px',
-                height: '140px',
-                borderRadius: '70px',
-                border: `8px solid ${scoreColor}`,
-                backgroundColor: '#FAFAFA',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '42px',
-                  fontWeight: '700',
-                  color: scoreColor,
-                }}
-              >
-                {score}
-              </span>
-              <span style={{ fontSize: '12px', color: '#757575' }}>
-                de 1000
-              </span>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                marginTop: '12px',
-                padding: '6px 16px',
-                backgroundColor: scoreColor,
-                borderRadius: '12px',
-              }}
-            >
-              <span style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: '600' }}>
-                {scoreLabel}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '12px 30px',
-            backgroundColor: '#F5F5F5',
-            borderTop: '1px solid #E0E0E0',
-          }}
-        >
-          <span style={{ color: '#9E9E9E', fontSize: '10px' }}>
-            Consulta realizada em {new Date().toLocaleDateString('pt-BR')}
-          </span>
-          <span style={{ color: '#E91E63', fontSize: '10px', fontWeight: '600' }}>
-            serasa.com.br
-          </span>
-        </div>
-      </div>
-    ),
-    {
-      width: 600,
-      height: 400,
-    }
-  );
+  return new Response(svg, {
+    headers: {
+      'Content-Type': 'image/svg+xml',
+      'Cache-Control': 'public, max-age=0',
+    },
+  });
 }
